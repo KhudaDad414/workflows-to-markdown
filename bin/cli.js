@@ -1,14 +1,20 @@
-#!/usr/bin/env node
-const tool = require('command-line-tool');
-const version = require('../package').version;
+#! /usr/bin/env node
+const { getWorkflowsMarkdown, writeFile } = require('../lib');
+const { program } = require('commander');
+program
+  .option(
+    '-o, --output <path>',
+    'path to an .md file that you want your documentation to be saved there.',
+    '.github/workflows/README.md'
+  )
+  .option(
+    '-i, --input <path>',
+    'path to a directory that contains your workflow files.',
+    '.github/workflows'
+  )
+  .parse();
 
-console.log(version);
-
-function parseCommandLine() {
-  const cliData = require('../lib/cli-data');
-  try {
-    return tool.getCli(cliData.definitions, cliData.usageSections);
-  } catch (err) {
-    handleError(err);
-  }
-}
+const { output, input } = program.opts();
+const markdown = getWorkflowsMarkdown(input);
+console.log(markdown);
+writeFile(output, markdown);

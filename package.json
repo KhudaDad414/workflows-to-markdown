@@ -1,11 +1,16 @@
 {
   "name": "workflows-to-markdown",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "bin/cli.js",
   "bin": {
-    "workflows2md": "index.js"
+    "workflows2md": "bin/cli.js"
   },
+  "files": [
+    "bin",
+    "lib",
+    "package.json"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -21,6 +26,8 @@
   },
   "homepage": "https://github.com/KhudaDad414/workflows-to-markdown#readme",
   "dependencies": {
-    "commander": "^8.3.0"
+    "commander": "^8.3.0",
+    "cronstrue": "^1.122.0",
+    "js-yaml": "^4.1.0"
   }
 }
