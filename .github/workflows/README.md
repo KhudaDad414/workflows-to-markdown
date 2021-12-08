@@ -1,62 +1,44 @@
+## Event-Workflow Map
 
+<table>
+<tr>
+<th rowspan=2>When Pull Request Target:</th><th>opened </th><th>ready_for_review, reopened </th><th>synchronize, edited </th><th>labeled, unlocked, unlabeled </th></tr>
+<tr><td><ul><li><a href='#automerge-release-bump-pr'>Automerge release bump PR</a></li><li><a href='#notify-slack'>Notify slack</a></li><li><a href='#lint-pr-title'>Lint PR title</a></li><li><a href='#welcome-first-time-contributors'>Welcome first time contributors</a></li></ul><td><ul><li><a href='#automerge-release-bump-pr'>Automerge release bump PR</a></li><li><a href='#notify-slack'>Notify slack</a></li><li><a href='#lint-pr-title'>Lint PR title</a></li></ul><td><ul><li><a href='#automerge-release-bump-pr'>Automerge release bump PR</a></li><li><a href='#lint-pr-title'>Lint PR title</a></li></ul><td><ul><li><a href='#automerge-release-bump-pr'>Automerge release bump PR</a></li></ul></tr><tr>
+<th rowspan=2>When Issues:</th><th>opened </th><th>reopened </th><th>deleted, unlabeled, labeled, closed </th><th>edited </th></tr>
+<tr><td><ul><li><a href='#deploy-to-netlify'>Deploy to Netlify</a></li><li><a href='#notify-slack'>Notify slack</a></li><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li><li><a href='#welcome-first-time-contributors'>Welcome first time contributors</a></li></ul><td><ul><li><a href='#deploy-to-netlify'>Deploy to Netlify</a></li><li><a href='#notify-slack'>Notify slack</a></li></ul><td><ul><li><a href='#deploy-to-netlify'>Deploy to Netlify</a></li></ul><td><ul><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul></tr><tr>
+<th rowspan=2>When Push:</th><th>master </th><th>{} </th><th>next, **-release </th></tr>
+<tr><td><ul><li><a href='#bump-package-version-in-dependent-repos---if-node-project'>Bump package version in dependent repos - if Node project</a></li><li><a href='#release---if-node-project'>Release - if Node project</a></li></ul><td><ul><li><a href='#autoupdate'>autoupdate</a></li></ul><td><ul><li><a href='#release---if-node-project'>Release - if Node project</a></li></ul></tr><tr>
+<th rowspan=2>When Pull Request:</th><th>opened </th><th>reopened, ready_for_review, synchronize </th><th>edited </th></tr>
+<tr><td><ul><li><a href='#pr-testing---if-go-project'>PR testing - if Go project</a></li><li><a href='#pr-testing---if-node-project'>PR testing - if Node project</a></li><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul><td><ul><li><a href='#pr-testing---if-go-project'>PR testing - if Go project</a></li><li><a href='#pr-testing---if-node-project'>PR testing - if Node project</a></li></ul><td><ul><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul></tr><tr>
+<th rowspan=2>When Pull Request Review:</th><th>submitted </th><th>edited </th></tr>
+<tr><td><ul><li><a href='#automerge-release-bump-pr'>Automerge release bump PR</a></li><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul><td><ul><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul></tr><tr>
+<th rowspan=2>Schedules:</th><th>At 12:00 AM </th></tr>
+<tr><td><ul><li><a href='#notify-on-failing-automerge'>Notify on failing automerge</a></li><li><a href='#manage-stale-issues-and-prs'>Manage stale issues and PRs</a></li></ul></tr><tr>
+<th rowspan=2>When Release:</th><th>published </th></tr>
+<tr><td><ul><li><a href='#version-bump---if-node.js-project'>Version bump - if Node.js project</a></li><li><a href='#announce-releases-in-different-channels'>Announce releases in different channels</a></li></ul></tr><tr>
+<th rowspan=2>When Discussion:</th><th>created </th></tr>
+<tr><td><ul><li><a href='#notify-slack'>Notify slack</a></li></ul></tr><tr>
+<th rowspan=2>When Issue Comment:</th><th>created, edited </th></tr>
+<tr><td><ul><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul></tr><tr>
+<th rowspan=2>When Pull Request Review Comment:</th><th>created, edited </th></tr>
+<tr><td><ul><li><a href='#sentiment-analysis'>Sentiment Analysis</a></li></ul></tr></table>
 
- | When Pull Request Target: | opened | ready_for_review, reopened | synchronize, edited | labeled, unlocked, unlabeled | 
-| --- | --- | --- | --- | 
-| <ul><li>[Automerge release bump PR](#automerge-release-bump-pr)</li><li>[Notify slack](#notify-slack)</li><li>[Lint PR title](#lint-pr-title)</li><li>[Welcome first time contributors](#welcome-first-time-contributors)</li> </ul> |<ul><li>[Automerge release bump PR](#automerge-release-bump-pr)</li><li>[Notify slack](#notify-slack)</li><li>[Lint PR title](#lint-pr-title)</li> </ul> |<ul><li>[Automerge release bump PR](#automerge-release-bump-pr)</li><li>[Lint PR title](#lint-pr-title)</li> </ul> |<ul><li>[Automerge release bump PR](#automerge-release-bump-pr)</li> </ul> |
- | When Issues: | opened | reopened | deleted, unlabeled, labeled, closed | edited | 
-| --- | --- | --- | --- | 
-| <ul><li>[Deploy to Netlify](#deploy-to-netlify)</li><li>[Notify slack](#notify-slack)</li><li>[Sentiment Analysis](#sentiment-analysis)</li><li>[Welcome first time contributors](#welcome-first-time-contributors)</li> </ul> |<ul><li>[Deploy to Netlify](#deploy-to-netlify)</li><li>[Notify slack](#notify-slack)</li> </ul> |<ul><li>[Deploy to Netlify](#deploy-to-netlify)</li> </ul> |<ul><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |
- | When Push: | master | {} | next, **-release | 
-| --- | --- | --- | 
-| <ul><li>[Bump package version in dependent repos - if Node project](#bump-package-version-in-dependent-repos---if-node-project)</li><li>[Release - if Node project](#release---if-node-project)</li> </ul> |<ul><li>[autoupdate](#autoupdate)</li> </ul> |<ul><li>[Release - if Node project](#release---if-node-project)</li> </ul> |
- | When Pull Request: | opened | reopened, ready_for_review, synchronize | edited | 
-| --- | --- | --- | 
-| <ul><li>[PR testing - if Go project](#pr-testing---if-go-project)</li><li>[PR testing - if Node project](#pr-testing---if-node-project)</li><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |<ul><li>[PR testing - if Go project](#pr-testing---if-go-project)</li><li>[PR testing - if Node project](#pr-testing---if-node-project)</li> </ul> |<ul><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |
- | When Pull Request Review: | submitted | edited | 
-| --- | --- | 
-| <ul><li>[Automerge release bump PR](#automerge-release-bump-pr)</li><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |<ul><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |
- | Schedules: | At 12:00 AM | 
-| --- | 
-| <ul><li>[Notify on failing automerge](#notify-on-failing-automerge)</li><li>[Manage stale issues and PRs](#manage-stale-issues-and-prs)</li> </ul> |
- | When Release: | published | 
-| --- | 
-| <ul><li>[Version bump - if Node.js project](#version-bump---if-node.js-project)</li><li>[Announce releases in different channels](#announce-releases-in-different-channels)</li> </ul> |
- | When Discussion: | created | 
-| --- | 
-| <ul><li>[Notify slack](#notify-slack)</li> </ul> |
- | When Issue Comment: | created, edited | 
-| --- | 
-| <ul><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |
- | When Pull Request Review Comment: | created, edited | 
-| --- | 
-| <ul><li>[Sentiment Analysis](#sentiment-analysis)</li> </ul> |## Workflows 
-### [Automerge release bump PR](hub/workflows/automerge.yml) 
-A short description about the workflow will appear here... 
-### [Notify slack](hub/workflows/issues-prs-notifications.yml) 
-A short description about the workflow will appear here... 
-### [Lint PR title](hub/workflows/lint-pr-title.yml) 
-A short description about the workflow will appear here... 
-### [Welcome first time contributors](hub/workflows/welcome-first-time-contrib.yml) 
-A short description about the workflow will appear here... 
-### [Deploy to Netlify](hub/workflows/deploy.yml) 
-A short description about the workflow will appear here... 
-### [Sentiment Analysis](hub/workflows/sentiment-analysis.yml) 
-A short description about the workflow will appear here... 
-### [Bump package version in dependent repos - if Node project](hub/workflows/bump.yml) 
-A short description about the workflow will appear here... 
-### [Release - if Node project](hub/workflows/if-nodejs-release.yml) 
-A short description about the workflow will appear here... 
-### [autoupdate](hub/workflows/autoupdate.yml) 
-A short description about the workflow will appear here... 
-### [PR testing - if Go project](hub/workflows/if-go-pr-testing.yml) 
-A short description about the workflow will appear here... 
-### [PR testing - if Node project](hub/workflows/if-nodejs-pr-testing.yml) 
-A short description about the workflow will appear here... 
-### [Notify on failing automerge](hub/workflows/automerge-orphans.yml) 
-A short description about the workflow will appear here... 
-### [Manage stale issues and PRs](hub/workflows/stale-issues-prs.yml) 
-A short description about the workflow will appear here... 
-### [Version bump - if Node.js project](hub/workflows/if-nodejs-version-bump.yml) 
-A short description about the workflow will appear here... 
-### [Announce releases in different channels](hub/workflows/release-announcements.yml) 
-A short description about the workflow will appear here... 
+## Workflows 
+
+ | Workflow | Description | 
+ | --- | --- | 
+| [Automerge release bump PR](hub/workflows/automerge.yml) | A short description about the workflow will appear here... |
+| [Notify slack](hub/workflows/issues-prs-notifications.yml) | A short description about the workflow will appear here... |
+| [Lint PR title](hub/workflows/lint-pr-title.yml) | A short description about the workflow will appear here... |
+| [Welcome first time contributors](hub/workflows/welcome-first-time-contrib.yml) | A short description about the workflow will appear here... |
+| [Deploy to Netlify](hub/workflows/deploy.yml) | A short description about the workflow will appear here... |
+| [Sentiment Analysis](hub/workflows/sentiment-analysis.yml) | A short description about the workflow will appear here... |
+| [Bump package version in dependent repos - if Node project](hub/workflows/bump.yml) | A short description about the workflow will appear here... |
+| [Release - if Node project](hub/workflows/if-nodejs-release.yml) | A short description about the workflow will appear here... |
+| [autoupdate](hub/workflows/autoupdate.yml) | A short description about the workflow will appear here... |
+| [PR testing - if Go project](hub/workflows/if-go-pr-testing.yml) | A short description about the workflow will appear here... |
+| [PR testing - if Node project](hub/workflows/if-nodejs-pr-testing.yml) | A short description about the workflow will appear here... |
+| [Notify on failing automerge](hub/workflows/automerge-orphans.yml) | A short description about the workflow will appear here... |
+| [Manage stale issues and PRs](hub/workflows/stale-issues-prs.yml) | A short description about the workflow will appear here... |
+| [Version bump - if Node.js project](hub/workflows/if-nodejs-version-bump.yml) | A short description about the workflow will appear here... |
+| [Announce releases in different channels](hub/workflows/release-announcements.yml) | A short description about the workflow will appear here... |

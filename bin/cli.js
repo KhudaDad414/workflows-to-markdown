@@ -16,4 +16,5 @@ program
 
 const { output, input } = program.opts();
 const markdown = getWorkflowsMarkdown(input);
+console.log(markdown);
 writeFile(output, markdown);
