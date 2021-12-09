@@ -5,7 +5,7 @@ program
   .option(
     '-o, --output <path>',
     'path to an .md file that you want your documentation to be saved there.',
-    '.github/workflows/README.md'
+    '.github/README.md'
   )
   .option(
     '-i, --input <path>',
