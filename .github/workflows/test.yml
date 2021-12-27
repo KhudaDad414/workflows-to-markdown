@@ -1,0 +1,20 @@
+name: "units-test"
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - 'release/*'
+
+jobs:
+  # test action works running from the graph
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 
+    - uses: ./
+      id: workflows2md
+    - uses: EndBug/add-and-commit@v7
+      with:
+       cwd: ${{env.GITHUB_WORKSPACE}}
+       add: ${{ steps.workflows2md.outputs.path }}

@@ -1,0 +1,55 @@
+name: Remove from Good First Issue
+on:
+  issues:
+    types:
+      - closed
+jobs:
+  remove-from-good-first-issues:
+    if: contains(github.event.issue.labels.*.name, 'good first issue')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get the item id
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+          ORGANIZATION: asyncapi
+          PROJECT_NUMBER: 4
+          ISSUE_ID: ${{ github.event.issue.node_id }}
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectNext(number: $number) {
+                  id
+                  items(first:100) {
+                    nodes {
+                      id
+                      content {
+                        ... on Issue {
+                          id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > item_ids.json
+
+          echo 'PROJECT_ID='$(jq '.data.organization.projectNext.id' item_ids.json) >> $GITHUB_ENV
+          echo 'ITEM_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .id' item_ids.json) >> $GITHUB_ENV
+      - name: Remove Issue From Projects
+        env:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+        run: |
+          item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation($project:ID!, $item_id:ID!) {
+              deleteProjectNextItem(
+                input: {
+                  projectId: $project
+                  itemId: $item_id
+                }
+              ) {
+                deletedItemId
+              }
+            }' -f project=$PROJECT_ID -f item_id=$ITEM_ID --jq '.data.deleteProjectNextItem.projectNextItem.deletedItemId')"
+          
+          echo 'Item with ID: '$item_id' Has been removed.'

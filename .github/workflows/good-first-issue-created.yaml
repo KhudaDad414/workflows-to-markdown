@@ -1,0 +1,108 @@
+name: Add to Good First Issue
+on:
+  issues:
+    types:
+      - labeled
+      - reopened
+jobs:
+  add-to-good-first-issues:
+    env:
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+      ISSUE_ID: ${{ github.event.issue.node_id }}
+      PROJECT_ID: PN_kwDOAPpDts0UBA
+    if: contains(github.event.issue.labels.*.name, 'good first issue')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add Issue to project
+        run: |
+         gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation($project:ID!, $pr:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $pr}) {
+                projectNextItem {
+                  id
+                  project {
+                    fields(last:10) {
+                      nodes {
+                        id
+                        name
+                        settings
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID > project_data.json
+        
+          echo 'ITEM_ID='$(jq '.data.addProjectNextItem.projectNextItem.id' project_data.json) >> $GITHUB_ENV
+          echo 'AREA_FIELD_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Area") | .id' project_data.json) >> $GITHUB_ENV
+          echo 'COMPLEXITY_FIELD_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Complexity") | .id' project_data.json) >> $GITHUB_ENV
+      - name: Is complexity easy
+        if: contains(github.event.issue.labels.*.name, 'complexity/easy')
+        run: |
+          echo 'COMPLEXITY_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Complexity") |.settings | fromjson.options[] | select(.name=="Easy") |.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Is complexity moderate
+        if: contains(github.event.issue.labels.*.name, 'complexity/moderate')
+        run: |
+          echo 'COMPLEXITY_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Complexity") |.settings | fromjson.options[] | select(.name=="Moderate") |.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Is complexity hard
+        if: contains(github.event.issue.labels.*.name, 'complexity/hard')
+        run: |
+          echo 'COMPLEXITY_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Complexity") |.settings | fromjson.options[] | select(.name=="Hard") |.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Is area typescript
+        if: contains(github.event.issue.labels.*.name, 'area/typescript')
+        run: |
+          echo 'AREA_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Area") |.settings | fromjson.options[] | select(.name=="Typescript") |.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Is area javascript
+        if: contains(github.event.issue.labels.*.name, 'area/javascript')
+        run: |
+          echo 'AREA_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Area") |.settings | fromjson.options[] | select(.name=="Javascript") |.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Is area markdown
+        if: contains(github.event.issue.labels.*.name, 'area/markdown')
+        run: |
+          echo 'AREA_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Area") |.settings | fromjson.options[] | select(.name=="Markdown") |.id' project_data.json) >> $GITHUB_ENV
+
+      - name: Is area Github Actions
+        if: contains(github.event.issue.labels.*.name, 'area/github actions')
+        run: |
+          echo 'AREA_OPTION_ID='$(jq '.data.addProjectNextItem.projectNextItem.project.fields.nodes[] | select(.name== "Area") |.settings | fromjson.options[] | select(.name=="GithubActions") |.id' project_data.json) >> $GITHUB_ENV
+
+
+      - name: Add the data to the projects
+        if: ${{env.COMPLEXITY_OPTION_ID && env.AREA_OPTION_ID}}
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation (
+              $project: ID!
+              $item: ID!
+              $area_field: ID!
+              $area_value: String!
+              $complexity_field: ID!
+              $complexity_value: String!
+            ) {
+              set_complexity: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $complexity_field
+                value: $complexity_value
+              }) {
+                projectNextItem {
+                  id
+                  }
+              }
+              set_area: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $area_field
+                value: $area_value
+              }) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f complexity_field=$COMPLEXITY_FIELD_ID -f complexity_value=${{ env.COMPLEXITY_OPTION_ID }} -f area_field=$AREA_FIELD_ID -f area_value=${{ env.AREA_OPTION_ID }} --silent
+            

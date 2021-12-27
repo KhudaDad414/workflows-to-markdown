@@ -1,0 +1,72 @@
+name: Add to Hot Issues/PRs
+on:
+  pull_request_target:
+    types: 
+      - opened
+      - reopened
+  issues:
+    types:
+      - opened
+      - reopened
+jobs:
+  add-to-hot:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: PN_kwDOAPpDts0fAA
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+    steps:
+      - name: Add Issue/PR to projects
+        env:
+          ISSUE_ID: ${{ github.event.issue.node_id || github.event.pull_request.node_id }}
+          PROJECT_ID: PN_kwDOAPpDts0fAA
+        run: |
+          item_id="$( gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation($project:ID!, $pr:ID!) {
+              addProjectNextItem(input: {projectId: $project, contentId: $pr}) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f pr=$ISSUE_ID --jq '.data.addProjectNextItem.projectNextItem.id')"
+          
+          echo 'ITEM_ID='$item_id >> $GITHUB_ENV
+
+      - name: Get date
+        run: echo "DATE=$(date +"%Y-%m-%d")" >> $GITHUB_ENV
+
+      - name: Set date
+        env:
+          DATE_FIELD_ID: MDE2OlByb2plY3ROZXh0RmllbGQ2MDIyOA==
+          INTERACTION_FIELD_ID: MDE2OlByb2plY3ROZXh0RmllbGQ2MDIzMA==
+          INTERACTION_FIELD_VALUE: 0
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation (
+              $project: ID!
+              $item: ID!
+              $interaction_field: ID!
+              $interaction_value: String!
+              $date_field: ID!
+              $date_value: String!
+            ) {
+              set_interaction: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $interaction_field
+                value: $interaction_value
+              }) {
+                projectNextItem {
+                  id
+                  }
+              }
+              set_date_posted: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $date_field
+                value: $date_value
+              }) {
+                projectNextItem {
+                  id
+                }
+              }
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f interaction_field=$INTERACTION_FIELD_ID -f interaction_value=$INTERACTION_FIELD_VALUE -f date_field=$DATE_FIELD_ID -f date_value=$DATE --silent

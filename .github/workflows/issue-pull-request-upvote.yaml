@@ -1,0 +1,98 @@
+name: Upvote issue
+on:
+  issue_comment:
+    types:
+      - created
+jobs:
+  upvote:
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: PN_kwDOAPpDts0fAA
+      GITHUB_TOKEN: ${{secrets.GH_TOKEN_ORG_ADMIN}}
+      ISSUE_ID: ${{ github.event.issue.node_id || github.event.pull_request.node_id}}
+    steps:
+      - name: Count Interaction
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            query($issue_id: ID!){
+              node(id: $issue_id) {
+                ...on Issue {
+                  reactions(first: 1){
+                    totalCount
+                  }
+                  comments(first: 100) {
+                    nodes{
+                      reactions(first: 1){
+                        totalCount
+                      }
+                    }
+                  }
+                }
+                ...on PullRequest {
+                  comments(first: 100) {
+                    nodes{
+                      reactions(first: 1){
+                        totalCount
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f issue_id=$ISSUE_ID > raw.json
+          echo 'INTERACTIONS_VALUE='$(jq '.data.node | [(.reactions.totalCount), (.comments.nodes | length), ([.comments.nodes[].reactions.totalCount] | add)] | add' raw.json) >> $GITHUB_ENV
+      - name: Get the item id
+        env:
+          ORGANIZATION: asyncapi
+          PROJECT_NUMBER: 9
+        run: |
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            query($org: String!, $number: Int!) {
+              organization(login: $org){
+                projectNext(number: $number) {
+                  id
+                  items(first:100) {
+                    nodes {
+                      id
+                      fieldValues(last: 2){
+                        nodes {
+                        value
+                        projectField {
+                          id
+                          name
+                        }
+                        }
+                      }
+                      content {
+                        ... on Issue {
+                          id
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }' -f org=$ORGANIZATION -F number=$PROJECT_NUMBER > item_ids.json
+          echo 'ITEM_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .id' item_ids.json) >> $GITHUB_ENV
+          echo 'INTERACTIONS_ID='$(jq '.data.organization.projectNext.items.nodes[] | select(.content.id=="'$ISSUE_ID'") | .fieldValues.nodes[] | select(.projectField.name=="NumberOfInteractions") | .projectField.id' item_ids.json) >> $GITHUB_ENV
+          
+      - name: Increment the interaction count.
+        run: |
+          INTERACTIONS_VALUE=$((INTERACTIONS_VALUE+1))
+          gh api graphql --header 'GraphQL-Features: projects_next_graphql' -f query='
+            mutation (
+              $project: ID!
+              $item: ID!
+              $interaction_field: ID!
+              $interaction_value: String!
+            ) {
+              set_interaction: updateProjectNextItemField(input: {
+                projectId: $project
+                itemId: $item
+                fieldId: $interaction_field
+                value: $interaction_value
+              }) {
+                projectNextItem {
+                  id
+                  }
+              }
+            }' -f project=$PROJECT_ID -f item=$ITEM_ID -f interaction_field=$INTERACTIONS_ID -f interaction_value=$INTERACTIONS_VALUE --silent
