@@ -2,6 +2,18 @@
 
 Workflows to markdown is supposed to generate a map of your event-workflows. It will show you what event causes which workflows to run.
 
+## CLI
+
+```
+Usage: cli [options]
+
+Options:
+  -o, --output <path>  path to an .md file that you want your documentation to be saved there. (default:
+                       ".github/workflows/README.md")
+  -i, --input <path>   path to a directory that contains your workflow files. (default: ".github/workflows")
+  -h, --help           display help for command
+```
+
 ## Install
 
 > Note: You can use [Workflows to Markdown Action](https://github.com/KhudaDad414/workflows2md-action) if you want to automate the process of map generation.
@@ -67,15 +79,3 @@ This is a map that has been generated from [AsyncAPI's website workflows](https:
 | <a href="/test-workflows/stale-issues-prs.yml" id="manage-stale-issues-and-prs">Manage stale issues and PRs</a>                                                                        | Your first comment after <code>name</code> parameter in workflow will appear here. |
 | <a href="/test-workflows/if-nodejs-version-bump.yml" id="version-bump---if-node.js-project">Version bump - if Node.js project</a>                                                      | There is no need to substract "v" from the tag as version script handles it        |
 | <a href="/test-workflows/release-announcements.yml" id="announce-releases-in-different-channels">Announce releases in different channels</a>                                           | Your first comment after <code>name</code> parameter in workflow will appear here. |
-
-## CLI
-
-```
-Usage: cli [options]
-
-Options:
-  -o, --output <path>  path to an .md file that you want your documentation to be saved there. (default:
-                       ".github/workflows/README.md")
-  -i, --input <path>   path to a directory that contains your workflow files. (default: ".github/workflows")
-  -h, --help           display help for command
-```
