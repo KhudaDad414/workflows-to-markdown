@@ -28,7 +28,7 @@ After installation you can run `workflows2md` on your terminal in your project's
 ```cli
 workflows2md -i /.github/workflows -o WORKFLOWS.md
 ```
-## Output Sample
+## Output Example
 
 This is a map that has been generated from [AsyncAPI's website workflows](https://github.com/asyncapi/website/tree/master/.github/workflows).
 ### Event-Workflow Map
