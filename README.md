@@ -11,21 +11,14 @@ Install with [npm](https://www.npmjs.com/):
 ```sh
 $ npm install --save-dev workflows-to-markdown
 ```
-
-## CLI
-
+## Usage
+After installation you can run `workflows2md` on your terminal in your project's path. you can change the input and output location using [CLI options](#cli);
+```cli
+workflows2md -i /.github/workflows -o WORKFLOWS.md
 ```
-Usage: cli [options]
-
-Options:
-  -o, --output <path>  path to an .md file that you want your documentation to be saved there. (default:
-                       ".github/workflows/README.md")
-  -i, --input <path>   path to a directory that contains your workflow files. (default: ".github/workflows")
-  -h, --help           display help for command
-```
-
 ## Output Sample
 
+This is a map that has been generated from [AsyncAPI's website workflows](https://github.com/asyncapi/website/tree/master/.github/workflows).
 ### Event-Workflow Map
 
 <table>
@@ -74,3 +67,15 @@ Options:
 | <a href="/test-workflows/stale-issues-prs.yml" id="manage-stale-issues-and-prs">Manage stale issues and PRs</a>                                                                        | Your first comment after <code>name</code> parameter in workflow will appear here. |
 | <a href="/test-workflows/if-nodejs-version-bump.yml" id="version-bump---if-node.js-project">Version bump - if Node.js project</a>                                                      | There is no need to substract "v" from the tag as version script handles it        |
 | <a href="/test-workflows/release-announcements.yml" id="announce-releases-in-different-channels">Announce releases in different channels</a>                                           | Your first comment after <code>name</code> parameter in workflow will appear here. |
+
+## CLI
+
+```
+Usage: cli [options]
+
+Options:
+  -o, --output <path>  path to an .md file that you want your documentation to be saved there. (default:
+                       ".github/workflows/README.md")
+  -i, --input <path>   path to a directory that contains your workflow files. (default: ".github/workflows")
+  -h, --help           display help for command
+```
